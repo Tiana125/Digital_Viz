@@ -4,7 +4,7 @@ You can use the [editor on GitHub](https://github.com/Tiana125/Digital_Viz/edit/
 
 Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
 
-<iframe src="rail.html" width = "1650" height = "700" frameborder = "0"></iframe>
+<iframe src="rail.html" frameborder = "0"></iframe>
 
 ### Markdown
 
