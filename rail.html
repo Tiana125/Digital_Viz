@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Swipe between maps</title>
+    <title>Rail passenger counts affected by COVID lockdowns</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.2.0/mapbox-gl.js"></script>
@@ -47,6 +47,7 @@
             position: absolute;
             bottom: 20px;
             right: 20px;
+            width: 400px;
             background: rgba(255, 255, 255, 0.8);
             margin-right: 20px;
             font-family: Arial, sans-serif;
@@ -61,10 +62,12 @@
             top: 10px;
             left: 10px;
             border-radius: 3px;
-            width: 120px;
+            width: 240px;
             border: 1px solid rgba(0, 0, 0, 0.4);
-            font-family: 'Open Sans', sans-serif;
+            font-family: Arial, sans-serif;
         }
+
+        #menu legend {}
 
         #menu a {
             font-size: 13px;
@@ -100,9 +103,13 @@
     <link rel="stylesheet"
         href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.css"
         type="text/css">
-    <nav id="menu">
-        <legend>lockdowns</legend>
-    </nav>
+    <div id="menu">
+        <legend>
+
+
+            Click on a button to get started!
+        </legend>
+    </div>
 
     <div id="comparison-container">
         <div id="before" class="map"></div>
@@ -111,7 +118,12 @@
     <div class='map-overlay' id='features'>
         <h2> TfL Rail Station Footfall</h2>
         <div id='pd'>
-            <p>Hover over a station!</p>
+            <p>Hover over a station!
+                Rail passenger loss affected by Covid-related lockdowns
+                Circle radius is proportional to the average footfall of a TfL rail station one week before and after
+                the
+                lockdowns.
+            </p>
         </div>
     </div>
     <script>
@@ -156,13 +168,13 @@
                     'visibility': 'visible' // default visible
                 },
                 paint: {
-                    'circle-color': '#fffef7',
-                    'circle-opacity': 0.95,
-                    'circle-stroke-width': {
-                        stops: [[8, 0.5], [13, 3], [16, 4]]  // The width properties change at different zoom levels, getting thicker
-                    },
-                    'circle-stroke-color': '#000',
-                    'circle-stroke-opacity': 1,
+                    'circle-color': '#36454F',
+                    'circle-opacity': 0.8,
+                    // 'circle-stroke-width': {
+                    //     stops: [[8, 0.5], [13, 3], [16, 4]]  // The width properties change at different zoom levels, getting thicker
+                    // },
+                    // 'circle-stroke-color': '#000',
+                    // 'circle-stroke-opacity': 1,
                     'circle-radius': {
                         property: 'beforeld1', // 0 - 75.71
                         stops: [                             // The circle radius varies according to the zoom level and the number of passengers
