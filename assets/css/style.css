@@ -413,11 +413,11 @@ section{
 }
 .expert .section{
 	padding-left: 15px;
-	padding-right: 0%;
+	padding-right: 15px;
 }
 
 .expert1{
-	background-color: #ffffff;
+	background-color: #E6E6E6;
 }
 .expert1 p{
 	line-height: 200%;
@@ -428,7 +428,7 @@ section{
 }
 .expert1 .section{
 	padding-right: 15px;
-	padding-left: 0%;
+	padding-left: 15px;
 }
 
 
