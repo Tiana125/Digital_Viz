@@ -147,7 +147,7 @@ section{
 	top: 0;
 }
 .section{
-	padding: 100px 0;
+	padding: 50px 0;
 }
 
 /*Vira Card*/
@@ -390,11 +390,11 @@ section{
 }
 
 .about{
-	background-color: #f8f8f8;
+	background-color:  #f8f8f8;
 }
 .about img{
-	margin: 30px auto;
-	display: block;
+	margin: 15px auto;
+	display: outside;
 }
 .about span{
 	font-family: 'Raleway';
@@ -412,9 +412,28 @@ section{
 	display: none;
 }
 .expert .section{
-	padding-left: 30px;
+	padding-left: 15px;
 	padding-right: 0%;
 }
+
+.expert1{
+	background-color: #ffffff;
+}
+.expert1 p{
+	line-height: 200%;
+}
+
+.expert1 .bg-img:after{
+	display: none;
+}
+.expert1 .section{
+	padding-right: 15px;
+	padding-left: 0%;
+}
+
+
+
+
 
 
 .vira-quote{
