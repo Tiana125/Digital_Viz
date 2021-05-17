@@ -101,15 +101,20 @@ body { margin:0; padding:0; }
 <div class='map-overlay top'>
     <div class='map-overlay-inner'>
         <div class="radio-toolbar">
-            <h2>Traffic flow and road congression in London from 2019 to 2020 </h2>
-            <h3>Brough (traffic flow)</h3>
+            <h2>Traffic flow and road congestion in London from 2019 to 2020 </h2>
+            <h3>Brough (traffic flow - num of vehicles passing)</h3>
             <input type="radio" id="layer4" name="layers" value="Employment" checked>
             <label for="layer4">2019</label>
         
             <input type="radio" id="layer5" name="layers" value="Residents">
             <label for="layer5">2020</label>
 
-            <h3>Main road (congression)</h3>
+            <input type="radio" id="layer6" name="layers" value="Residents">
+            <label for="layer6">change%</label>
+
+            <h3>Main road (congression - Average delay)</h3>
+
+            <h4>                      </h4>
 
             <input type="radio" id="layer2" name="layers" value="Employment" >
             <label for="layer2">2019</label>
@@ -253,9 +258,9 @@ body { margin:0; padding:0; }
         type: 'fill',
         source: {
           type: 'vector',
-          url: 'mapbox://ucfnjsh.c6xnp5fy' 
+          url: 'mapbox://ucfnjsh.3hqqn0lo' 
         },
-        'source-layer': 'tf_road-7ggklb', 
+        'source-layer': 'tf_road1-bp3p0m', 
         paint: {
             
             'fill-color': [
@@ -281,9 +286,9 @@ body { margin:0; padding:0; }
         type: 'fill',
         source: {
           type: 'vector',
-          url: 'mapbox://ucfnjsh.c6xnp5fy' 
+          url: 'mapbox://ucfnjsh.3hqqn0lo' 
         },
-        'source-layer': 'tf_road-7ggklb', 
+        'source-layer': 'tf_road1-bp3p0m', 
         paint: {
             
             'fill-color': [
@@ -304,14 +309,42 @@ body { margin:0; padding:0; }
       }      ,
     'waterway-label', 'admin-0-admin-1-boundary-bg','admin-0-boundary');
 
+    map.addLayer({
+        id: 'growth',
+        type: 'fill',
+        source: {
+          type: 'vector',
+          url: 'mapbox://ucfnjsh.3hqqn0lo' 
+        },
+        'source-layer': 'tf_road1-bp3p0m', 
+        paint: {
+            
+            'fill-color': [
+                'interpolate',
+                 ['linear'],
+                 ['get', 'grow'],
+                    -25, '#1a78d1',
+
+                    -14, '#a8b8cc'
+        ],             
+            
+            'fill-opacity': 0,
+            'fill-opacity-transition': {  
+                 duration: 500,
+                 delay: 0
+             }
+            }
+      }      ,
+    'waterway-label', 'admin-0-admin-1-boundary-bg','admin-0-boundary');
 
 var mypopup = new mapboxgl.Popup({offset:[0,0],closeButton: false});
 map.on('mousemove', '2019_1', function (e) {
     mypopup
 .setLngLat(e.lngLat)
 .setHTML("<h3>" + e.features[0].properties['borough']+ "</h3><strong>2019:</strong>  " + 
-                        e.features[0].properties['2019'] +  "<br /><strong>2020:</strong>  " + 
-                        e.features[0].properties['2020'] + "<br /><strong>Growth:</strong>  " + (e.features[0].properties['2020']-e.features[0].properties['2019']))
+                        e.features[0].properties['2019'] + " (" + (e.features[0].properties['2019']/221990*100).toFixed(3) +"%)" +  "<br /><strong>2020:</strong>  " + 
+                        e.features[0].properties['2020'] + " (" + (e.features[0].properties['2020']/181128*100).toFixed(3) +"%)" + "<br /><strong>Growth:</strong>  " + 
+                        (e.features[0].properties['2020']-e.features[0].properties['2019']) + " (" + e.features[0].properties['grow'].toFixed(3) +"%)" )
 .addTo(map);
 });
  
@@ -336,7 +369,7 @@ map.setPaintProperty('change%','line-opacity',0);
 map.setPaintProperty('2020_1','fill-opacity',0);
 map.setPaintProperty('2020','line-opacity',0.95);
 map.setPaintProperty('2019_1','fill-opacity',0);
-
+map.setPaintProperty('growth','fill-opacity',0);
 });
 
 document.getElementById("layer2").addEventListener("click", function(){
@@ -345,16 +378,16 @@ map.setPaintProperty('2019','line-opacity',0.95);
 map.setPaintProperty('change%','line-opacity',0);
 map.setPaintProperty('2020_1','fill-opacity',0);
 map.setPaintProperty('2019_1','fill-opacity',0);
-
+map.setPaintProperty('growth','fill-opacity',0);
 });
 
 document.getElementById("layer3").addEventListener("click", function(){
 map.setPaintProperty('2020','line-opacity',0);
 map.setPaintProperty('2019','line-opacity',0);
-map.setPaintProperty('change%','line-opacity',0.95);
+map.setPaintProperty('change%','line-opacity',0.7);
 map.setPaintProperty('2020_1','fill-opacity',0);
 map.setPaintProperty('2019_1','fill-opacity',0);
-
+map.setPaintProperty('growth','fill-opacity',0);
 });
 
 document.getElementById("layer4").addEventListener("click", function(){
@@ -363,7 +396,7 @@ map.setPaintProperty('2019','line-opacity',0);
 map.setPaintProperty('change%','line-opacity',0);
 map.setPaintProperty('2019_1','fill-opacity',0.7);
 map.setPaintProperty('2020_1','fill-opacity',0);
-
+map.setPaintProperty('growth','fill-opacity',0);
 });
 
 document.getElementById("layer5").addEventListener("click", function(){
@@ -372,9 +405,17 @@ map.setPaintProperty('2019','line-opacity',0);
 map.setPaintProperty('change%','line-opacity',0);
 map.setPaintProperty('2019_1','fill-opacity',0);
 map.setPaintProperty('2020_1','fill-opacity',0.7);
-
+map.setPaintProperty('growth','fill-opacity',0);
 });
 
+document.getElementById("layer6").addEventListener("click", function(){
+map.setPaintProperty('2020','line-opacity',0);
+map.setPaintProperty('2019','line-opacity',0);
+map.setPaintProperty('change%','line-opacity',0);
+map.setPaintProperty('2019_1','fill-opacity',0);
+map.setPaintProperty('2020_1','fill-opacity',0);
+map.setPaintProperty('growth','fill-opacity',0.7);
+});
 
 </script>
 
