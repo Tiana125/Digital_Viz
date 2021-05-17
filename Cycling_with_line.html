@@ -10,11 +10,16 @@
   body {
     font-family: Helvetica Neue, Arial, sans-serif;
     text-align: center;
+    margin:0; padding:0;
   }
+  #myChart { position:absolute; top:0; bottom:0; width:100%; } 
+  /* YT added this */
 
   .wrapper {
     /* max-width: 800px; */
     /* margin: 50px auto; */
+    position:absolute; top:0; bottom:0; width:100%;
+    /* YT added this */
   }
 
   /* h1 {
@@ -42,7 +47,8 @@
     <!-- <h1>The change of the Number of Bicycle Hires in London during COVID-19 (highlighting the 1st lockdown period)</h1>
     <h2>Monthly Data from 2019 to 2021</h2> -->
 
-    <canvas id="myChart"></canvas>
+    <canvas id="myChart"></canvas> 
+    <!-- /* YT changed this */ -->
   </div>
 
   <script>
