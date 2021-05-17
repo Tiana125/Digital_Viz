@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>England and Wales Employment and Population Density 3D Map</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css" rel="stylesheet" />
+    <style>
+body { margin:0; padding:0; }
+#map { position:absolute; top:0; bottom:0; width:100%; }
+
+.map-overlay {
+    font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    position: absolute;
+    width: 20%;
+    top: 0;
+    left: 0;
+    padding: 15px;
+    padding-top: 20px;
+}
+
+.map-overlay .map-overlay-inner {
+    background-color: rgba(255, 255, 255, 0.568);
+    box-shadow:0 1px 2px rgba(0, 0, 0, 0.20);
+    border-radius: 3px;
+    padding: 15px;
+    margin-bottom:10px;
+}
+
+.map-overlay table {
+    border: none;
+    width: 100%;
+}
+
+.map-overlay h2 {
+    line-height: 24px;
+    display: block;
+    margin: 0 0 10px;
+}
+
+.map-overlay label {
+    font: 16px/18px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+    vertical-align: bottom;
+    margin: 0;
+    padding: 0;
+}
+
+.map-overlay .legend .bar {
+    height: 10px;
+    width: 100%;
+    background: linear-gradient(to right, #FCA107, #7F3121);
+}
+
+.map-overlay input {
+    display: inline;
+    vertical-align: middle;
+    margin: 5px;
+    padding: 0;
+}
+
+.map-overlay p.credit {
+   margin: 5px 0 0 0;
+   padding: 0;
+}
+
+.radio-toolbar input[type="radio"] {
+  opacity: 0;
+  position: fixed;
+  width: 0;
+}
+
+.radio-toolbar label {
+    display: inline-block;
+    background-color: rgba(221, 221, 221, 0.767);
+    padding: 10px 20px;
+    font-family: sans-serif, Arial;
+    font-size: 16px;
+    border: 2px solid #444;
+    border-radius: 4px;
+}
+
+.radio-toolbar input[type="radio"]:checked + label {
+    background-color:rgba(59, 68, 78, 0.527);
+    border-color: rgb(11, 14, 11);
+}
+
+.radio-toolbar input[type="radio"]:focus + label {
+    border: 2px solid #444;
+}
+.radio-toolbar input[type="radio"]:focus + label {
+    border: 2px solid #444;
+}
+
+    </style>
+</head>
+<body>
+
+
+<div id='map'></div>
+<div class='map-overlay top'>
+    <div class='map-overlay-inner'>
+        <div class="radio-toolbar">
+            <h2>Traffic flow and road congression in London from 2019 to 2020 </h2>
+            <h3>Brough (traffic flow)</h3>
+            <input type="radio" id="layer4" name="layers" value="Employment" checked>
+            <label for="layer4">2019</label>
+        
+            <input type="radio" id="layer5" name="layers" value="Residents">
+            <label for="layer5">2020</label>
+
+            <h3>Main road (congression)</h3>
+
+            <input type="radio" id="layer2" name="layers" value="Employment" >
+            <label for="layer2">2019</label>
+        
+            <input type="radio" id="layer1" name="layers" value="Residents">
+            <label for="layer1">2020</label>
+
+            <input type="radio" id="layer3" name="layers" value="Residents">
+            <label for="layer3">change%</label>
+        
+
+        </div>
+        <p>&nbsp;</p>
+    
+        <!-- <h2>England and Wales Employment and Population Density 2011</h2>
+		<table><tr><td>
+  		<input type="radio" name="layers" id="layer1" value="" checked><label>2020 &nbsp; &nbsp;</label>
+  		<input type="radio" name="layers" id="layer2" value="Residents"><label>2019 </label>
+        <input type="radio" name="layers" id="layer3" value="Residents"><label>change% </label> 
+         </td>
+         </tr> -->
+</div>
+</div>
+
+
+
+    <script>
+
+
+    mapboxgl.accessToken = 'pk.eyJ1IjoidWNmbmpzaCIsImEiOiJja2s4cjkxOGYwMXh3MnZtbjIxOWtkN3BkIn0.2EF7pkhUJfBvVOmboaKATA'; 
+    // Put your Mapbox Public Access token here
+
+    // Load a new map in the 'map' HTML div
+    var map = new mapboxgl.Map({
+    container: 'map', // container id
+    style: 'mapbox://styles/ucfnjsh/cko1au51g0orr17qo2cwk7qmw', // map background layer location
+    center: [-0.124, 51.496], // starting position [lng, lat]
+    zoom: 10, // starting zoom
+    pitch: 50 // tilt of the viewpoint in degrees
+    });
+
+
+    map.on('load', function() {
+
+
+      // Add standard navigation control
+      map.addControl(new mapboxgl.NavigationControl());
+
+    // Load the 3D employment hexagon layer as a fill-extrusion type
+      map.addLayer({
+        id: '2020',
+        type: 'line',
+        source: {
+          type: 'vector',
+          url: 'mapbox://ucfnjsh.6o97eo3a' // Your Mapbox tileset Map ID
+        },
+        'source-layer': 'cg_road-1idyym', // name of tileset
+        paint: {
+            
+            'line-color': [
+                'interpolate',
+                 ['linear'],
+                 ['get', '2020'],
+                    0, '#ebe3e0',
+                    100, '#d3725f',
+                    400, '#520e00'
+        ],             
+            
+            'line-opacity': 0,
+            'line-width': 2.5,
+            'line-opacity-transition': {  
+                 duration: 500,
+                 delay: 0
+             }
+            }
+      },      
+      'waterway-label', 'admin-0-admin-1-boundary-bg','admin-0-boundary');
+
+    // Load the second 3D population hexagon layer. This layer has its opacity set to zero.
+      map.addLayer({
+        id: '2019',
+        type: 'line',
+        source: {
+          type: 'vector',
+          url: 'mapbox://ucfnjsh.6o97eo3a' // Your Mapbox tileset Map ID
+        },
+        'source-layer': 'cg_road-1idyym', // name of tileset
+        paint: {
+            
+            'line-color': [
+                'interpolate',
+                 ['linear'],
+                 ['get', '2019'],
+                    0, '#ebe3e0',
+                    100, '#d3725f',
+                    400, '#520e00'
+        ],             
+            
+            'line-opacity': 0,
+            'line-width': 2.5,
+            'line-opacity-transition': {  
+                 duration: 500,
+                 delay: 0
+             }
+            }
+           
+      },'waterway-label', 'admin-0-admin-1-boundary-bg','admin-0-boundary');
+
+    // Load the second 3D population hexagon layer. This layer has its opacity set to zero.
+    map.addLayer({
+        id: 'change%',
+        type: 'line',
+        source: {
+          type: 'vector',
+          url: 'mapbox://ucfnjsh.6o97eo3a' // Your Mapbox tileset Map ID
+        },
+        'source-layer': 'cg_road-1idyym', // name of tileset
+        paint: {
+            
+            'line-color': [
+                'interpolate',
+                 ['linear'],
+                 ['get', 'change%'],
+                    -0.1, '#1a78d1',
+                   0.1, '#d1231a'
+
+        ],             
+            
+            'line-opacity': 0,
+            'line-width': 2.5,
+            'line-opacity-transition': {  
+                 duration: 500,
+                 delay: 0
+             }
+            }
+           
+      },'waterway-label', 'admin-0-admin-1-boundary-bg','admin-0-boundary');
+
+      map.addLayer({
+        id: '2019_1',
+        type: 'fill',
+        source: {
+          type: 'vector',
+          url: 'mapbox://ucfnjsh.c6xnp5fy' 
+        },
+        'source-layer': 'tf_road-7ggklb', 
+        paint: {
+            
+            'fill-color': [
+                'interpolate',
+                 ['linear'],
+                 ['get', '2019'],
+                 3800, '#ebe3e0',
+
+                10000, '#e33e02'
+        ],             
+            
+            'fill-opacity': 0.7,
+            'fill-opacity-transition': {  
+                 duration: 500,
+                 delay: 0
+             }
+            }
+      }      ,
+    'waterway-label', 'admin-0-admin-1-boundary-bg','admin-0-boundary');
+
+      map.addLayer({
+        id: '2020_1',
+        type: 'fill',
+        source: {
+          type: 'vector',
+          url: 'mapbox://ucfnjsh.c6xnp5fy' 
+        },
+        'source-layer': 'tf_road-7ggklb', 
+        paint: {
+            
+            'fill-color': [
+                'interpolate',
+                 ['linear'],
+                 ['get', '2020'],
+                    3800, '#ebe3e0',
+
+                    10000, '#e33e02'
+        ],             
+            
+            'fill-opacity': 0,
+            'fill-opacity-transition': {  
+                 duration: 500,
+                 delay: 0
+             }
+            }
+      }      ,
+    'waterway-label', 'admin-0-admin-1-boundary-bg','admin-0-boundary');
+
+
+var mypopup = new mapboxgl.Popup({offset:[0,0],closeButton: false});
+map.on('mousemove', '2019_1', function (e) {
+    mypopup
+.setLngLat(e.lngLat)
+.setHTML("<h3>" + e.features[0].properties['borough']+ "</h3><strong>2019:</strong>  " + 
+                        e.features[0].properties['2019'] +  "<br /><strong>2020:</strong>  " + 
+                        e.features[0].properties['2020'] + "<br /><strong>Growth:</strong>  " + (e.features[0].properties['2020']-e.features[0].properties['2019']))
+.addTo(map);
+});
+ 
+
+map.on('mouseenter', '2019_1', function () {
+map.getCanvas().style.cursor = 'pointer';
+});
+ 
+
+map.on('mouseleave', '2019_1', function () {
+map.getCanvas().style.cursor = '';
+mypopup.remove();
+});
+
+    });
+
+
+//Event listener for layer switch
+document.getElementById("layer1").addEventListener("click", function(){
+map.setPaintProperty('2019','line-opacity',0);
+map.setPaintProperty('change%','line-opacity',0);
+map.setPaintProperty('2020_1','fill-opacity',0);
+map.setPaintProperty('2020','line-opacity',0.95);
+map.setPaintProperty('2019_1','fill-opacity',0);
+
+});
+
+document.getElementById("layer2").addEventListener("click", function(){
+map.setPaintProperty('2020','line-opacity',0);
+map.setPaintProperty('2019','line-opacity',0.95);
+map.setPaintProperty('change%','line-opacity',0);
+map.setPaintProperty('2020_1','fill-opacity',0);
+map.setPaintProperty('2019_1','fill-opacity',0);
+
+});
+
+document.getElementById("layer3").addEventListener("click", function(){
+map.setPaintProperty('2020','line-opacity',0);
+map.setPaintProperty('2019','line-opacity',0);
+map.setPaintProperty('change%','line-opacity',0.95);
+map.setPaintProperty('2020_1','fill-opacity',0);
+map.setPaintProperty('2019_1','fill-opacity',0);
+
+});
+
+document.getElementById("layer4").addEventListener("click", function(){
+map.setPaintProperty('2020','line-opacity',0);
+map.setPaintProperty('2019','line-opacity',0);
+map.setPaintProperty('change%','line-opacity',0);
+map.setPaintProperty('2019_1','fill-opacity',0.7);
+map.setPaintProperty('2020_1','fill-opacity',0);
+
+});
+
+document.getElementById("layer5").addEventListener("click", function(){
+map.setPaintProperty('2020','line-opacity',0);
+map.setPaintProperty('2019','line-opacity',0);
+map.setPaintProperty('change%','line-opacity',0);
+map.setPaintProperty('2019_1','fill-opacity',0);
+map.setPaintProperty('2020_1','fill-opacity',0.7);
+
+});
+
+
+</script>
+
+</body>
+</html>

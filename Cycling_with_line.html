@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>The change in the Number of Bicycle Hires during the COIVD-19</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+</head>
+
+<style>
+  body {
+    font-family: Helvetica Neue, Arial, sans-serif;
+    text-align: center;
+  }
+
+  .wrapper {
+    max-width: 800px;
+    margin: 50px auto;
+  }
+
+  /* h1 {
+    font-weight: 200;
+    font-size: 1.5em;
+    margin: 0 0 0.1em 0;
+  }
+
+  h2 {
+    font-weight: 200;
+    font-size: 0.9em;
+    margin: 0 0 50px;
+    color: #999;
+  } */
+
+  a {
+    margin-top: 50px;
+    display: block;
+    color: #3e95cd;
+  }
+</style>
+
+<body>
+  <div class="wrapper">
+    <!-- <h1>The change of the Number of Bicycle Hires in London during COVID-19 (highlighting the 1st lockdown period)</h1>
+    <h2>Monthly Data from 2019 to 2021</h2> -->
+
+    <canvas id="myChart" width="1300" height="950"></canvas>
+  </div>
+
+  <script>
+
+
+
+    // Our labels along the x-axis
+    var years = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    // For drawing the lines
+    var nine = [24860, 28506, 27726, 30702, 33067, 31955, 32133, 30930, 29599, 26599,
+      26600, 20206];
+    var zero = [{ x: 'January', y: 25011 }, { x: 'February', y: 23369 }, { x: 'March', y: 18803 }, { x: 'April', y: 22927 }, { x: 'May', y: 37057 },
+    { x: 'June', y: 37286 }, { x: 'July', y: 35161 }, { x: 'August', y: 31550 }, { x: 'September', y: 34123 }, { x: 'October', y: 28306 },
+    { x: 'November', y: 26521 }, { x: 'December', y: 21751 }];
+    var one = [13267, 17560, 13616, 10374];
+
+    var covid = [{ x: 'February', y: 23369 }]
+
+    var originalLineDraw = Chart.controllers.line.prototype.draw;
+    Chart.helpers.extend(Chart.controllers.line.prototype, {
+      draw: function () {
+        originalLineDraw.apply(this, arguments);
+        var chart = this.chart;
+        var ctx = chart.chart.ctx;
+        if (chart.config.data.lineAtIndex) {
+          for (i in chart.config.data.lineAtIndex) {
+            var xaxis = chart.scales['x-axis-0'];
+            var yaxis = chart.scales['y-axis-0'];
+            ctx.save();
+            ctx.beginPath();
+            ctx.moveTo(xaxis.getPixelForValue(undefined, chart.config.data.lineAtIndex[i]), yaxis.top);
+            ctx.strokeStyle = '#a6a6a6';
+            ctx.lineWidth = 1;
+            ctx.lineTo(xaxis.getPixelForValue(undefined, chart.config.data.lineAtIndex[i]), yaxis.bottom);
+            ctx.stroke();
+            ctx.restore();
+          }
+          var xaxis = chart.scales['x-axis-0'];
+          var yaxis = chart.scales['y-axis-0'];
+          var x = xaxis.getPixelForValue(undefined, chart.config.data.lineAtIndex[0]);
+          var w = xaxis.getPixelForValue(undefined, chart.config.data.lineAtIndex[1]) - x;
+          ctx.save();
+          ctx.fillStyle = "rgb(166, 166, 166, 0.1)";
+          ctx.fillRect(x, yaxis.top, w, yaxis.height);
+          ctx.restore();
+        }
+      }
+    });
+
+    var graph = {
+      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+      datasets: [
+        {
+          data: nine,
+          label: "2019",
+          borderColor: "#ff0066",
+          fill: false
+        },
+        {
+          data: zero,
+          label: "2020",
+          borderColor: "#0066ff",
+          fill: false
+
+        },
+        {
+          data: one,
+          label: "2021",
+          borderColor: "#ff9900",
+          fill: false,
+          hidden: false,
+          borderDash: [10, 5]
+        }
+      ]
+    };
+
+    Chart.plugins.register({
+      beforeDraw: function (c) {
+        var ctx = c.chart.ctx;
+        ctx.fillStyle = "rgba(255, 255, 255, 1)";
+        ctx.fillRect(0, 0, c.chart.width, c.chart.height);
+      }
+    });
+    var canvas = document.getElementById("myChart");
+    var ctx = canvas.getContext('2d');
+    var myChart = new Chart(ctx, {
+      type: 'line',
+      data: graph
+    });
+    /***** 配列で指定 *************/
+
+    graph.lineAtIndex = [2, 4];
+
+    myChart.update();
+
+
+
+
+  </script>
+</body>
+
+</html>

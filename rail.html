@@ -48,11 +48,19 @@
             bottom: 20px;
             right: 20px;
             width: 400px;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0.5);
             margin-right: 20px;
             font-family: Arial, sans-serif;
             overflow: auto;
             border-radius: 3px;
+        }
+
+        .map-overlay .map-overlay-inner {
+
+            /* box-shadow: 0 1px 2px rgba(0, 0, 0, 0.20); */
+            border-radius: 3px;
+            padding: 15px;
+            margin-bottom: 10px;
         }
 
         #menu {
@@ -67,11 +75,18 @@
             font-family: Arial, sans-serif;
         }
 
-        #menu legend {}
+        #menu legend {
+            font-size: 15px;
+            background-color: #92c7ec;
+            color: #000000;
+            padding: 10px;
+            text-align: center;
+        }
 
         #menu a {
-            font-size: 13px;
+            font-size: 15px;
             color: #404040;
+            background-color: #f8f8f8;
             display: block;
             margin: 0;
             padding: 0;
@@ -91,12 +106,12 @@
         }
 
         #menu a.active {
-            background-color: #3887be;
-            color: #ffffff;
+            background-color: #f8f8f8;
+            color: #000000;
         }
 
         #menu a.active:hover {
-            background: #3074a4;
+            background: #3074a490;
         }
     </style>
     <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-compare/v0.4.0/mapbox-gl-compare.js"></script>
@@ -105,8 +120,6 @@
         type="text/css">
     <div id="menu">
         <legend>
-
-
             Click on a button to get started!
         </legend>
     </div>
@@ -115,282 +128,310 @@
         <div id="before" class="map"></div>
         <div id="after" class="map"></div>
     </div>
-    <div class='map-overlay' id='features'>
-        <h2> TfL Rail Station Footfall</h2>
-        <div id='pd'>
-            <p>Hover over a station!
-                Rail passenger loss affected by Covid-related lockdowns
-                Circle radius is proportional to the average footfall of a TfL rail station one week before and after
-                the
-                lockdowns.
-            </p>
+
+
+
+    <div class='map-overlay top' id='features'>
+        <div class='map-overlay-inner'>
+            <h2> TfL Rail Station Footfall <br>Before and After Lockdowns</h2>
+
+            <div id='pd'>
+                <h3>Hover over a station!</h3>
+
+                <p>
+                    <!-- Rail passenger loss affected by Covid-related lockdowns <br> -->
+                    Circle radius is proportional to the average footfall of a TfL rail station one week
+                    before and after the lockdowns.
+                </p>
+            </div>
+
+
         </div>
-    </div>
-    <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoidGlhbmExMjUiLCJhIjoiY2tpMGJpcGlkMjY3aDJycDV5amkzZzN1cyJ9.NEP-axK_c0O8ayn3AQJ9XQ';
-        var beforeMap = new mapboxgl.Map({
-            container: 'before',
-            style: 'mapbox://styles/tiana125/ckk5f38pk0hbb17mkkq6skk2g',
-            center: [-0.1, 51.5],
-            zoom: 10
-        });
-
-        var afterMap = new mapboxgl.Map({
-            container: 'after',
-            style: 'mapbox://styles/tiana125/ckk5f38pk0hbb17mkkq6skk2g',
-            center: [-0.1, 51.5],
-            zoom: 10
-        });
-
-        // A selector or reference to HTML element
-        var container = '#comparison-container';
-
-        var map = new mapboxgl.Compare(beforeMap, afterMap, container, {
-            // Set this to enable comparing two maps by mouse movement:
-            // mousemove: true
-        });
-
-
-
-        beforeMap.on('load', function () {    //  can only add additional layers after the map has loaded
-
-            beforeMap.addSource('source', {
-                type: 'vector',
-                url: 'mapbox://tiana125.dv2trcco'// Mapbox tileset Map ID
+        <!-- <div class='map-overlay' id='features'>
+        <h2> TfL Rail Station Footfall</h2>
+        
+    </div> -->
+        <script>
+            mapboxgl.accessToken = 'pk.eyJ1IjoidGlhbmExMjUiLCJhIjoiY2tpMGJpcGlkMjY3aDJycDV5amkzZzN1cyJ9.NEP-axK_c0O8ayn3AQJ9XQ';
+            var beforeMap = new mapboxgl.Map({
+                container: 'before',
+                style: 'mapbox://styles/tiana125/ckk5f38pk0hbb17mkkq6skk2g',
+                center: [-0.1, 51.5],
+                zoom: 10
             });
 
-            beforeMap.addLayer({
-                id: 'beforeld1',
-                type: 'circle',
-                'source': 'source',
-                'source-layer': 'footfall-bzshet', // name of dataset layer
-                'layout': {
-                    'visibility': 'visible' // default visible
-                },
-                paint: {
-                    'circle-color': '#36454F',
-                    'circle-opacity': 0.8,
-                    // 'circle-stroke-width': {
-                    //     stops: [[8, 0.5], [13, 3], [16, 4]]  // The width properties change at different zoom levels, getting thicker
-                    // },
-                    // 'circle-stroke-color': '#000',
-                    // 'circle-stroke-opacity': 1,
-                    'circle-radius': {
-                        property: 'beforeld1', // 0 - 75.71
-                        stops: [                             // The circle radius varies according to the zoom level and the number of passengers
-                            [{ zoom: 9, value: 0 }, 1],
-                            [{ zoom: 9, value: 5 }, 3],
-                            [{ zoom: 9, value: 125 }, 5],
-                            [{ zoom: 12, value: 0 }, 3],
-                            [{ zoom: 12, value: 125 }, 40],
-                            [{ zoom: 16, value: 0 }, 4],
-                            [{ zoom: 16, value: 125 }, 150],
-                        ]
+            var afterMap = new mapboxgl.Map({
+                container: 'after',
+                style: 'mapbox://styles/tiana125/ckk5f38pk0hbb17mkkq6skk2g',
+                center: [-0.1, 51.5],
+                zoom: 10
+            });
 
-                    }
-                }
+            // A selector or reference to HTML element
+            var container = '#comparison-container';
+
+            var map = new mapboxgl.Compare(beforeMap, afterMap, container, {
+                // Set this to enable comparing two maps by mouse movement:
+                // mousemove: true
             });
 
 
 
-            beforeMap.addLayer({
-                id: 'beforeld2',
-                type: 'circle',
-                'source': 'source',
-                'source-layer': 'footfall-bzshet', // name of dataset layer 
-                'layout': {
-                    'visibility': 'none' // default not visible
-                },
-                paint: {
-                    'circle-color': '#fffef7',
-                    'circle-opacity': 0.95,
-                    'circle-stroke-width': {
-                        stops: [[8, 0.5], [13, 3], [16, 4]]  // The width properties change at different zoom levels, getting thicker
+            beforeMap.on('load', function () {    //  can only add additional layers after the map has loaded
+
+                beforeMap.addSource('source', {
+                    type: 'vector',
+                    url: 'mapbox://tiana125.dv2trcco'// Mapbox tileset Map ID
+                });
+
+                beforeMap.addLayer({
+                    id: 'beforeld1',
+                    type: 'circle',
+                    'source': 'source',
+                    'source-layer': 'footfall-bzshet', // name of dataset layer
+                    'layout': {
+                        'visibility': 'none' // default not visible
                     },
-                    'circle-stroke-color': '#000',
-                    'circle-stroke-opacity': 1,
-                    'circle-radius': {
-                        property: 'beforeld2', // 0 - 125
-                        stops: [                             // The circle radius varies according to the zoom level and the number of passengers
-                            [{ zoom: 9, value: 0 }, 1],
-                            [{ zoom: 9, value: 5 }, 3],
-                            [{ zoom: 9, value: 125 }, 5],
-                            [{ zoom: 12, value: 0 }, 3],
-                            [{ zoom: 12, value: 125 }, 40],
-                            [{ zoom: 16, value: 0 }, 4],
-                            [{ zoom: 16, value: 125 }, 150],
-                        ]
-                    }
-                }
-            });
-        });
+                    paint: {
+                        'circle-color': '#90ee90',
+                        'circle-opacity': 0.95,
+                        'circle-stroke-width': {
+                            stops: [[8, 0.5], [13, 3], [16, 4]] // The width properties change at different zoom levels, getting thicker
+                        },
+                        'circle-stroke-color': '#000',
+                        'circle-stroke-opacity': 1,
+                        'circle-radius': {
+                            property: 'beforeld1',
+                            stops: [                             // The circle radius varies according to the zoom level and the number of passengers
+                                [{ zoom: 9, value: 0 }, 1],
+                                // [{ zoom: 9, value: 5 }, 5],
+                                [{ zoom: 9, value: 125 }, 30],
+                                [{ zoom: 12, value: 0 }, 20],
+                                [{ zoom: 12, value: 125 }, 100],
+                                [{ zoom: 16, value: 0 }, 30],
+                                [{ zoom: 16, value: 125 }, 150],
 
+                            ]
 
-
-
-
-
-
-
-
-
-
-
-        afterMap.on('load', function () {    // This is our first example of asynchronous JS. We can only add additional layers after the map has loaded
-            // Add the circle layer to the map
-
-            afterMap.addSource('source', {
-                type: 'vector',
-                url: 'mapbox://tiana125.dv2trcco'// Mapbox tileset Map ID
-            });
-
-            afterMap.addLayer({
-                id: 'afterld1',
-                type: 'circle',
-                'source': 'source',
-                'source-layer': 'footfall-bzshet', // name of dataset layer
-                'layout': {
-                    'visibility': 'visible' // default visible
-                },
-                paint: {
-                    'circle-color': '#fffef7',
-                    'circle-opacity': 0.95,
-                    'circle-stroke-width': {
-                        stops: [[8, 0.5], [13, 3], [16, 4]] // The width properties change at different zoom levels, getting thicker
-                    },
-                    'circle-stroke-color': '#000',
-                    'circle-stroke-opacity': 1,
-                    'circle-radius': {
-                        property: 'footfall',
-                        stops: [                             // The circle radius varies according to the zoom level and the number of passengers
-                            [{ zoom: 9, value: 0 }, 1],
-                            [{ zoom: 9, value: 5 }, 3],
-                            [{ zoom: 9, value: 125 }, 5],
-                            [{ zoom: 12, value: 0 }, 3],
-                            [{ zoom: 12, value: 125 }, 40],
-                            [{ zoom: 16, value: 0 }, 4],
-                            [{ zoom: 16, value: 125 }, 150],
-                        ]
-                    }
-                }
-            });
-
-
-            afterMap.addLayer({
-                id: 'afterld2',
-                type: 'circle',
-                'source': 'source',
-                'source-layer': 'footfall-bzshet', // name of dataset layer CHANGETHIS
-                'layout': {
-                    'visibility': 'none' // default visible 
-                },
-                paint: {
-                    'circle-color': '#fffef7',
-                    'circle-opacity': 0.95,
-                    'circle-stroke-width': {
-                        stops: [[8, 0.5], [13, 3], [16, 4]] // The width properties change at different zoom levels, getting thicker
-                    },
-                    'circle-stroke-color': '#000',
-                    'circle-stroke-opacity': 1,
-                    'circle-radius': {
-                        property: 'footfall',
-                        stops: [                             // The circle radius varies according to the zoom level and the number of passengers
-                            [{ zoom: 9, value: 0 }, 1],
-                            [{ zoom: 9, value: 5 }, 3],
-                            [{ zoom: 9, value: 125 }, 5],
-                            [{ zoom: 12, value: 0 }, 3],
-                            [{ zoom: 12, value: 125 }, 40],
-                            [{ zoom: 16, value: 0 }, 4],
-                            [{ zoom: 16, value: 125 }, 150],
-                        ]
-                    }
-                }
-            });
-        });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // toggleLayer(['before ld1', 'after ld1'], 'ld1');
-        // toggleLayer(['before ld2', 'after ld2'], 'ld2');
-        toggleLayer('lockdown 1');
-        toggleLayer('lockdown 2');
-
-
-        function toggleLayer(name) {
-            var link = document.createElement('a');
-            link.href = '#';
-            link.className = 'active';
-            link.textContent = name;
-
-            link.onclick = function (e) {
-                var clickedLayer = this.textContent;
-
-                if (name == 'lockdown 1') {
-                    beforeMap.setLayoutProperty('beforeld1', 'visibility', 'visible');
-
-                    beforeMap.on('mousemove', function (e) {
-                        var boros = beforeMap.queryRenderedFeatures(e.point);
-
-                        if (boros.length > 0) {
-                            document.getElementById('pd').innerHTML = '<h3><strong>' + boros[0].properties.name + '</strong></h3><p><strong><em>' +
-                                Math.round(boros[0].properties.beforeld1) + '</strong> footfall</em></p>';
-                        } else {
-                            document.getElementById('pd').innerHTML = '<p>Hover over a station!</p>';
                         }
-                    });
-                    beforeMap.setLayoutProperty('beforeld2', 'visibility', 'none');
-                    afterMap.setLayoutProperty('afterld1', 'visibility', 'visible');
+                    }
+                });
 
-                    afterMap.on('mousemove', function (e) {
-                        var boros = afterMap.queryRenderedFeatures(e.point,
-                            // layers = { "beforeld1"}
-                        );
 
-                        if (boros.length > 0) {
-                            document.getElementById('pd').innerHTML = '<h3><strong>' + boros[0].properties.name + '</strong></h3><p><strong><em>' +
-                                Math.round(boros[0].properties.afterld1) + '</strong> k footfall</em></p>';
-                        } else {
-                            document.getElementById('pd').innerHTML = '<p>Hover over a station!</p>';
+
+                beforeMap.addLayer({
+                    id: 'beforeld2',
+                    type: 'circle',
+                    'source': 'source',
+                    'source-layer': 'footfall-bzshet', // name of dataset layer 
+                    'layout': {
+                        'visibility': 'none' // default not visible
+                    },
+                    paint: {
+                        'circle-color': '#90ee90',
+                        'circle-opacity': 0.95,
+                        'circle-stroke-width': {
+                            stops: [[8, 0.5], [13, 3], [16, 4]] // The width properties change at different zoom levels, getting thicker
+                        },
+                        'circle-stroke-color': '#000',
+                        'circle-stroke-opacity': 1,
+                        'circle-radius': {
+                            property: 'beforeld2',
+                            stops: [                             // The circle radius varies according to the zoom level and the number of passengers
+                                [{ zoom: 9, value: 0 }, 1],
+                                // [{ zoom: 9, value: 5 }, 5],
+                                [{ zoom: 9, value: 125 }, 30],
+                                [{ zoom: 12, value: 0 }, 20],
+                                [{ zoom: 12, value: 125 }, 100],
+                                [{ zoom: 16, value: 0 }, 30],
+                                [{ zoom: 16, value: 125 }, 150],
+
+                            ]
                         }
-                    });
-
-                    afterMap.setLayoutProperty('afterld2', 'visibility', 'none');
-                }
-                if (name == 'lockdown 2') {
-                    beforeMap.setLayoutProperty('beforeld1', 'visibility', 'none');
-                    beforeMap.setLayoutProperty('beforeld2', 'visibility', 'visible');
-                    afterMap.setLayoutProperty('afterld1', 'visibility', 'none');
-                    afterMap.setLayoutProperty('afterld2', 'visibility', 'visible');
-                }
-
-            };
-
-            var layers = document.getElementById('menu');
-            layers.appendChild(link);
-
-        }
+                    }
+                });
+            });
 
 
 
 
-    </script>
+
+
+
+
+
+
+
+
+            afterMap.on('load', function () {    // This is our first example of asynchronous JS. We can only add additional layers after the map has loaded
+                // Add the circle layer to the map
+
+                afterMap.addSource('source', {
+                    type: 'vector',
+                    url: 'mapbox://tiana125.dv2trcco'// Mapbox tileset Map ID
+                });
+
+                afterMap.addLayer({
+                    id: 'afterld1',
+                    type: 'circle',
+                    'source': 'source',
+                    'source-layer': 'footfall-bzshet', // name of dataset layer
+                    'layout': {
+                        'visibility': 'none' // default not visible
+                    },
+                    paint: {
+                        'circle-color': '#90ee90',
+                        'circle-opacity': 0.95,
+                        'circle-stroke-width': {
+                            stops: [[8, 0.5], [13, 3], [16, 4]] // The width properties change at different zoom levels, getting thicker
+                        },
+                        'circle-stroke-color': '#000',
+                        'circle-stroke-opacity': 1,
+                        'circle-radius': {
+                            property: 'afterld1',
+                            stops: [                             // The circle radius varies according to the zoom level and the number of passengers
+                                [{ zoom: 9, value: 0 }, 1],
+                                // [{ zoom: 9, value: 5 }, 5],
+                                [{ zoom: 9, value: 125 }, 30],
+                                [{ zoom: 12, value: 0 }, 20],
+                                [{ zoom: 12, value: 125 }, 100],
+                                [{ zoom: 16, value: 0 }, 30],
+                                [{ zoom: 16, value: 125 }, 150],
+
+                            ]
+                        }
+                    }
+                });
+
+
+                afterMap.addLayer({
+                    id: 'afterld2',
+                    type: 'circle',
+                    'source': 'source',
+                    'source-layer': 'footfall-bzshet', // name of dataset layer CHANGETHIS
+                    'layout': {
+                        'visibility': 'none' // default visible 
+                    },
+                    paint: {
+                        'circle-color': '#90ee90',
+                        'circle-opacity': 0.95,
+                        'circle-stroke-width': {
+                            stops: [[8, 0.5], [13, 3], [16, 4]] // The width properties change at different zoom levels, getting thicker
+                        },
+                        'circle-stroke-color': '#000',
+                        'circle-stroke-opacity': 1,
+                        'circle-radius': {
+                            property: 'afterld2',
+                            stops: [                             // The circle radius varies according to the zoom level and the number of passengers
+                                [{ zoom: 9, value: 0 }, 1],
+                                // [{ zoom: 9, value: 5 }, 5],
+                                [{ zoom: 9, value: 125 }, 30],
+                                [{ zoom: 12, value: 0 }, 20],
+                                [{ zoom: 12, value: 125 }, 100],
+                                [{ zoom: 16, value: 0 }, 30],
+                                [{ zoom: 16, value: 125 }, 150],
+                            ]
+                        }
+                    }
+                });
+            });
+
+
+
+
+
+            // switch layer according to button
+            toggleLayer('lockdown 1 (23 Mar)');
+            toggleLayer('lockdown 2 (5 Nov)');
+
+
+
+
+            function toggleLayer(name) {
+                var link = document.createElement('a');
+                link.href = '#';
+                link.className = 'active';
+                link.textContent = name;
+
+                link.onclick = function (e) {
+                    var clickedLayer = this.textContent;
+
+                    if (name == 'lockdown 1 (23 Mar)') {
+                        beforeMap.setLayoutProperty('beforeld1', 'visibility', 'visible');
+                        beforeMap.on('mousemove', function (e) {
+                            var boros = beforeMap.queryRenderedFeatures(e.point, {
+                                layers: ["beforeld1"]
+                            });
+
+                            if (boros.length > 0) {
+                                document.getElementById('pd').innerHTML = '<h3><strong>' + boros[0].properties.name + '</strong></h3><p><strong><em>' +
+                                    Math.round(boros[0].properties.beforeld1) + '</strong> k footfall</em></p>';
+                            } else {
+                                document.getElementById('pd').innerHTML = '<p>Hover over a station! <br><br>Circle radius is proportional to the average footfall of a TfL rail station one week before and after the lockdowns.</p>';
+                            }
+                        });
+
+                        beforeMap.setLayoutProperty('beforeld2', 'visibility', 'none');
+
+                        afterMap.setLayoutProperty('afterld1', 'visibility', 'visible');
+                        afterMap.on('mousemove', function (e) {
+                            var boros = afterMap.queryRenderedFeatures(e.point, {
+                                layers: ["afterld1"]
+                            });
+
+                            if (boros.length > 0) {
+                                document.getElementById('pd').innerHTML = '<h3><strong>' + boros[0].properties.name + '</strong></h3><p><strong><em>' +
+                                    Math.round(boros[0].properties.afterld1) + '</strong> k footfall</em></p>';
+                            } else {
+                                document.getElementById('pd').innerHTML = '<p>Hover over a station! <br><br>Circle radius is proportional to the average footfall of a TfL rail station one week before and after the lockdowns.</p>';
+                            }
+                        });
+
+                        afterMap.setLayoutProperty('afterld2', 'visibility', 'none');
+                    }
+                    if (name == 'lockdown 2 (5 Nov)') {
+                        beforeMap.setLayoutProperty('beforeld1', 'visibility', 'none');
+                        beforeMap.setLayoutProperty('beforeld2', 'visibility', 'visible');
+                        beforeMap.on('mousemove', function (e) {
+                            var boros = beforeMap.queryRenderedFeatures(e.point, {
+                                layers: ["beforeld2"]
+                            });
+
+                            if (boros.length > 0) {
+                                document.getElementById('pd').innerHTML = '<h3><strong>' + boros[0].properties.name + '</strong></h3><p><strong><em>' +
+                                    Math.round(boros[0].properties.beforeld1) + '</strong> k footfall</em></p>';
+                            } else {
+                                document.getElementById('pd').innerHTML = '<p>Hover over a station! <br><br>Circle radius is proportional to the average footfall of a TfL rail station one week before and after the lockdowns.</p>';
+                            }
+                        });
+                        afterMap.setLayoutProperty('afterld1', 'visibility', 'none');
+                        afterMap.setLayoutProperty('afterld2', 'visibility', 'visible');
+                        afterMap.on('mousemove', function (e) {
+                            var boros = afterMap.queryRenderedFeatures(e.point, {
+                                layers: ["afterld2"]
+                            });
+
+                            if (boros.length > 0) {
+                                document.getElementById('pd').innerHTML = '<h3><strong>' + boros[0].properties.name + '</strong></h3><p><strong><em>' +
+                                    Math.round(boros[0].properties.afterld1) + '</strong> k footfall</em></p>';
+                            } else {
+                                document.getElementById('pd').innerHTML = '<p>Hover over a station! <br><br>Circle radius is proportional to the average footfall of a TfL rail station one week before and after the lockdowns.</p>';
+                            }
+                        });
+                    }
+
+                };
+
+                var layers = document.getElementById('menu');
+
+                layers.appendChild(link);
+
+            }
+
+
+
+
+        </script>
 
 </body>
 
