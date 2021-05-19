@@ -70,7 +70,7 @@
             top: 10px;
             left: 10px;
             border-radius: 3px;
-            width: 240px;
+            width: 300px;
             border: 1px solid rgba(0, 0, 0, 0.4);
             font-family: Arial, sans-serif;
         }
@@ -193,7 +193,7 @@
                         'visibility': 'none' // default not visible
                     },
                     paint: {
-                        'circle-color': '#90ee90',
+                        'circle-color': '#ffffff',
                         'circle-opacity': 0.95,
                         'circle-stroke-width': {
                             stops: [[8, 0.5], [13, 3], [16, 4]] // The width properties change at different zoom levels, getting thicker
@@ -228,7 +228,7 @@
                         'visibility': 'none' // default not visible
                     },
                     paint: {
-                        'circle-color': '#90ee90',
+                        'circle-color': '#ffffff',
                         'circle-opacity': 0.95,
                         'circle-stroke-width': {
                             stops: [[8, 0.5], [13, 3], [16, 4]] // The width properties change at different zoom levels, getting thicker
@@ -280,7 +280,7 @@
                         'visibility': 'none' // default not visible
                     },
                     paint: {
-                        'circle-color': '#90ee90',
+                        'circle-color': '#ffffff',
                         'circle-opacity': 0.95,
                         'circle-stroke-width': {
                             stops: [[8, 0.5], [13, 3], [16, 4]] // The width properties change at different zoom levels, getting thicker
@@ -313,7 +313,7 @@
                         'visibility': 'none' // default visible 
                     },
                     paint: {
-                        'circle-color': '#90ee90',
+                        'circle-color': '#ffffff',
                         'circle-opacity': 0.95,
                         'circle-stroke-width': {
                             stops: [[8, 0.5], [13, 3], [16, 4]] // The width properties change at different zoom levels, getting thicker
@@ -341,8 +341,8 @@
 
 
             // switch layer according to button
-            toggleLayer('lockdown 1 (23 Mar)');
-            toggleLayer('lockdown 2 (5 Nov)');
+            toggleLayer('lockdown 1 (16-23 Mar vs 23-30 Mar)');
+            toggleLayer('lockdown 2 (29 Oct-5 Nov vs 5-12 Nov)');
 
 
 
@@ -356,7 +356,7 @@
                 link.onclick = function (e) {
                     var clickedLayer = this.textContent;
 
-                    if (name == 'lockdown 1 (23 Mar)') {
+                    if (name == 'lockdown 1 (16-23 Mar vs 23-30 Mar)') {
                         beforeMap.setLayoutProperty('beforeld1', 'visibility', 'visible');
                         beforeMap.on('mousemove', function (e) {
                             var boros = beforeMap.queryRenderedFeatures(e.point, {
@@ -389,7 +389,7 @@
 
                         afterMap.setLayoutProperty('afterld2', 'visibility', 'none');
                     }
-                    if (name == 'lockdown 2 (5 Nov)') {
+                    if (name == 'lockdown 2 (29 Oct-5 Nov vs 5-12 Nov)') {
                         beforeMap.setLayoutProperty('beforeld1', 'visibility', 'none');
                         beforeMap.setLayoutProperty('beforeld2', 'visibility', 'visible');
                         beforeMap.on('mousemove', function (e) {
