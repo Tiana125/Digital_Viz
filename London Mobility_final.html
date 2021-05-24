@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>London Mobility - retail and recreation</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css" rel="stylesheet" />
+
+    <script charset="utf-8" src="https://d3js.org/d3.v4.min.js"></script>
+
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        #map {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 100%;
+        }
+
+        ;
+    </style>
+</head>
+
+
+
+
+
+<body>
+
+    <style>
+        .map-overlay {
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            position: absolute;
+            width: 25%;
+            top: 0;
+            left: 0;
+            padding: 10px;
+        }
+
+        .map-overlay .map-overlay-inner {
+            background-color: #fff;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .map-overlay h2 {
+            line-height: 24px;
+            display: block;
+            margin: 0 0 10px;
+        }
+
+        .map-overlay .legend .bar {
+            height: 10px;
+            width: 100%;
+            background: linear-gradient(to right, #fca107, #7f3121);
+        }
+
+        .map-overlay input {
+            background-color: transparent;
+            display: inline-block;
+            width: 100%;
+            position: relative;
+            margin: 0;
+            cursor: ew-resize;
+        }
+
+         
+        #title {
+            position: absolute;
+            background: #efefef;
+            padding: 10px;
+            font-family: 'Open Sans', sans-serif;
+        } 
+        
+        
+        .legend {
+            background-color: #fff;
+            border-radius: 3px;
+            bottom: 30px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            padding: 10px;
+            position: absolute;
+            right: 10px;
+            z-index: 1;
+            }
+ 
+        .legend h4 {
+            margin: 0 0 10px;
+            }
+ 
+        .legend div span {
+            border-radius: 50%;
+            display: inline-block;
+            height: 10px;
+            margin-right: 5px;
+            width: 10px;
+            }
+    </style>
+
+
+    <div id="map"></div>
+
+    <div id="title">
+        <h2>London Mobility</h2>
+        <p class="credit">Data: <a
+                href=" ">London
+                Mobility - retail and recreation</a >.</p >
+    </div>
+
+
+    <div class='map-overlay top'>
+        <div class='map-overlay-inner'>
+            <h2 id="laname">London Mobility</h2>
+            <p class="credit">Data: <a
+                    href="https://drive.google.com/file/d/1eXEl3EBS_Av2WpJxM91AK7N0EPt4LJCv/view?usp=sharing">London
+                    Mobility - retail and recreation</a >.</p >
+            <h2>Mobility</h2>
+            <table>
+                <tr>
+                    <td>
+                        <input id='slider' type='range' min='0' max='9' step='1' value='0' list='tickmarks' />
+                        <datalist id="tickmarks">
+                            <option value="0" label="03/20">
+                            <option value="1">
+                            <option value="2">
+                            <option value="3">
+                            <option value="4" label="07/20">
+                            <option value="5">
+                            <option value="6">
+                            <option value="7">
+                            <option value="8">
+                            <option value="9">
+
+                        </datalist>
+                    </td>
+                    <td>
+                        <label id='year'>03/20</label>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+
+ 
+            <div id="labels" class="legend">
+                    <h4>Mobility Change (%)</h4>
+                    <div><span style="background-color: #f82a2a"></span>-100</div>
+                    <div><span style="background-color: #f88e2a"></span>-75</div>
+                    <div><span style="background-color: #f8c52a"></span>-50</div>
+                    <div><span style="background-color: #f8f82a"></span>-25</div>
+                    <div><span style="background-color: #b7f82a"></span>0</div>
+            </div>
+ 
+            <div id="laname" class="legend" style="display: none">
+                    <h4>Mobility Change (%)</h4>
+                    <div><span style="background-color: #f82a2a"></span>-100</div>
+                    <div><span style="background-color: #f88e2a"></span>-75</div>   
+                    <div><span style="background-color: #f8c52a"></span>-50</div>
+                    <div><span style="background-color: #f8f82a"></span>-25</div>
+                    <div><span style="background-color: #b7f82a"></span>0</div>
+            </div>
+    
+       <script>
+
+
+        mapboxgl.accessToken = 'pk.eyJ1Ijoid2luZ29jaGF1IiwiYSI6ImNranZkaHBxZTA3djMycXJ2OTR6c3o0MHgifQ.FsxLELLZErzst3Tps21JUA';
+
+        // Load a new map in the 'map' HTML div
+        var map = new mapboxgl.Map({
+            container: 'map', // container id
+            style: 'mapbox://styles/wingochau/ckoktdmrg6h8p18muen5dd3ic',
+            center: [-0.1, 51.5], // starting position [lng, lat]
+            zoom: 10 // starting zoom
+        });
+
+
+        var years = [
+
+            '03/20',
+            '04/20',
+            '05/20',
+            '06/20',
+            '07/20',
+            '08/20',
+            '09/20',
+            '10/20',
+            '11/20',
+            '12/20'
+
+
+        ]
+
+         map.addControl(new mapboxgl.NavigationControl()); //Adds zoom control
+
+//         disable map rotation using right click + drag
+//         map.dragRotate.disable();
+//
+//         disable map rotation using touch rotation gesture
+//         map.touchZoomRotate.disableRotation();
+
+
+
+        map.on('load', function () {
+
+
+
+
+            map.addLayer({
+                id: 'Sitesline',
+                type: 'fill',
+                source: {
+                    type: 'vector',
+                    url: 'mapbox://wingochau.a0k3qo1s' // My Mapbox tileset Map ID 
+                },
+                'source-layer': 'london_boroughs_mobility-3reu4f', // name of tileset layer
+                'layout': {
+                    'visibility': 'visible'
+                    },
+                'paint': {
+                    'fill-color': [
+                    'interpolate',
+                    ['linear'],
+                    ['get', '03/20'],
+                    -100,
+                    '#f82a2a',
+                    -75,
+                    '#f88e2a',
+                    -50,
+                    '#f8c52a',
+                    -25,
+                    '#f8f82a',
+                    0,
+                    '#b7f82a'
+                    ],
+                    'fill-opacity': 1
+                    }
+
+            });
+
+            map.addLayer({                  // Add the line highlight layer. This layer has a filter, which initially is empty.
+            id: 'lahighlight',
+            type: 'line', // Show the outline of the local authorities
+            source: {
+              type: 'vector',
+              url: 'mapbox://wingochau.a0k3qo1s' // Your Mapbox tileset Map ID
+            },
+            'source-layer': 'london_boroughs_mobility-3reu4f', // name of tilesets
+            'layout': {
+                'visibility': 'visible'
+            },
+            paint: {
+                'line-color': '#adf',
+                'line-width': 4
+                },
+            filter: ['==','name','empty']
+          });
+            
+            
+            
+
+            // This is the main function that runs when the user changes the data year
+            function setYear(year) {
+
+                console.log(document.getElementById('year').textContent)
+                document.getElementById('year').textContent = years[year];  // Set the label to the correct year
+
+                var pp = map.getPaintProperty('Sitesline','fill-color');
+
+                console.log(pp[2][1]);
+                console.log(pp[2][1]);
+                
+                pp[2][1] = years[year];  // update the pp circle-radius to the new column set by the user
+
+                console.log(pp);              
+                
+                map.setPaintProperty('Sitesline','fill-color', pp);
+
+                 console.log(map.getPaintProperty('Sitesline','fill-color'));
+
+                 var yearcol = "EE" + String(years[year]);
+                 var textfield = "{" + yearcol + "}m";
+
+                 console.log(textfield);
+
+                 map.setLayoutProperty('labels', 'text-field', textfield); // update the labels layer to the new column
+                 var filters = ['>', yearcol, 30];
+                 map.setFilter('labels', filters);
+                 map.setLayoutProperty(document.getElementById('year').textContent, 'visibility', 'visible');
+                for (var i in years[i]) {
+                    if (years[i] == document.getElementById('year').textContent) {
+                        map.setLayoutProperty(years[i], 'visibility', 'visible');
+                    }
+                    if (years[i] != document.getElementById('year').textContent) {
+                        map.setLayoutProperty(years[i], 'visibility', 'none');
+                    }
+
+                };
+
+
+            }
+
+ 
+            
+
+             var popup = new mapboxgl.Popup({
+                 closeButton: false,
+                 closeOnClick: false
+             });
+
+           // // Assign an event listner to the slider so that the setYear function runs when the user changes the slider
+            document.getElementById('slider').addEventListener('input', function (e) {
+                var year = parseInt(e.target.value);
+                console.log(year)
+                setYear(year);
+            });
+
+
+             var mypopup = new mapboxgl.Popup({ offset: [150, 50], closeButton: true });
+            
+            
+             // Add the label layer to the map
+            map.addLayer({
+                'id': 'labels',
+                'type': 'symbol',
+                source: {
+                    type: 'vector',
+                    url: 'mapbox://wingochau.a0k3qo1s' // Your Mapbox tileset Map ID
+                },
+                'source-layer': 'london_boroughs_mobility-3reu4f', // name of tilesets
+                'layout': {
+                    'text-field': '{EE03/20}m',
+                    'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+                    'text-size': {
+                         stops: [[8, 0], [12.5, 0], [12.6, 12], [16, 20]]
+                     }
+                },
+                'paint': {
+                    'text-color': 'rgba(0,0,0,0.6)'
+                }
+                });
+
+            var filters = ['>', 'EE03/20', 30];
+            map.setFilter('labels', filters);
+
+            var prevyear = 0;
+            
+            
+            
+            var mypopup = new mapboxgl.Popup({offset:[0,0],closeButton: false});
+            map.on('mousemove', 'Sitesline', function (e) {
+                mypopup
+                    .setLngLat(e.lngLat)
+                    .setHTML("<h3>" + "<br />03/20: " + e.features[0].properties['03/20'] + "<br />04/20: " + e.features[0].properties['04/20'] + "<br />05/20: " + e.features[0].properties['05/20'] + "<br />06/20: " + e.features[0].properties['06/20'] + "<br />07/20: " + e.features[0].properties['07/20'] + "<br />08/20: " + e.features[0].properties['08/20'] + "<br />09/20: " + e.features[0].properties['09/20'] + "<br />10/20: " + e.features[0].properties['10/20'] + "<br />11/20: " + e.features[0].properties['11/20'] + "<br />12/20: " + e.features[0].properties['12/20'])
+                    .addTo(map);
+                    });
+
+
+            map.on('mouseenter', 'Sitesline', function () {
+            map.getCanvas().style.cursor = 'pointer';
+                });
+
+            map.on('mouseleave', 'Sitesline', function () {
+            map.getCanvas().style.cursor = '';
+            mypopup.remove();
+                });
+
+            });
+            
+            
+
+
+             var mypopup = new mapboxgl.Popup({ offset: [150, 50], closeButton: true });
+
+
+        map.on('mousemove', function(e) {       // This is the main event listner which is triggered when the mouse moves
+        var la = map.queryRenderedFeatures(e.point, {   // This queries whether the mouse is over an object in the LocalAuthorities layer
+        layers: ['Sitesline']
+          });
+
+
+        if (la.length==1) {   // This if statement is run when the mouse is over a local authority
+
+        map.setFilter('lahighlight', ['==','name',la[0].properties.name]);  // Filter the highlight layer to show the local authority outline
+        console.log(la[0].properties.name);
+        document.getElementById('laname').innerHTML = la[0].properties.name; // Change the name in the top left box to show the local authority name
+        console.log(la[0].id);
+        console.log(la);
+
+        } else {
+        map.setFilter('lahighlight', ['==','name','null']);
+        console.log('No features');
+        document.getElementById('laname').innerHTML = "Hover over a local authority";
+        }
+
+
+        });
+
+
+
+
+
+
+    </script>
+
+</body>
+
+</html>
