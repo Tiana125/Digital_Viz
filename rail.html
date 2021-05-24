@@ -378,7 +378,7 @@
                             var boros = afterMap.queryRenderedFeatures(e.point, {
                                 layers: ["afterld1"]
                             });
-
+                            // give visible layer's footfall figure
                             if (boros.length > 0) {
                                 document.getElementById('pd').innerHTML = '<h3><strong>' + boros[0].properties.name + '</strong></h3><p><strong><em>' +
                                     Math.round(boros[0].properties.afterld1) + '</strong> k footfall</em></p>';

@@ -92,17 +92,77 @@ body { margin:0; padding:0; }
     border: 2px solid #444;
 }
 
+.legend {
+background-color: #fff;
+border-radius: 10px;
+bottom: 30px;
+box-shadow: 0 10px 2px rgba(0, 0, 0, 0.1);
+font: 18px/25px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+padding: 10px;
+position: absolute;
+right: 15px;
+z-index: 1;
+}
+ 
+ 
+.legend div span {
+border-radius: 80%;
+display: inline-block;
+height: 15px;
+margin-right: 8px;
+width: 15px;
+}
+
+
     </style>
 </head>
 <body>
 
 
 <div id='map'></div>
+<div id="flow-legend" class="legend"style="display: block">
+ 
+    <div><span style="background-color: #ebe3e0"></span>3800</div>
+    <div><span style="background-color: #d3725f"></span>5300</div>
+    <div><span style="background-color: #d7492d"></span>6800</div>
+    <div><span style="background-color: #b42e13"></span>8400</div>
+    <div><span style="background-color: #520e00"></span>10000</div>
+
+    </div>
+
+    <div id="road-legend" class="legend"style="display: none">
+
+
+        <div><span style="background-color: #ebe3e0"></span>0</div>
+        <div><span style="background-color: #d3725f"></span>100</div>
+        <div><span style="background-color: #d7492d"></span>200</div>
+        <div><span style="background-color: #b42e13"></span>300</div>
+        <div><span style="background-color: #520e00"></span>400</div>
+
+        </div>
+
+        <div id="road-legend1" class="legend"style="display: none">
+
+            <div><span style="background-color: #1a78d1"></span>-0.1</div>
+            <div><span style="background-color: #ffffff"></span>0</div>
+            <div><span style="background-color: #d1231a"></span>0.1</div>
+
+            </div>
+
+            <div id="flow-legend1" class="legend"style="display: none">
+
+                <div><span style="background-color: #94b2d6"></span>-14</div>
+                <div><span style="background-color: #679bda"></span>-18</div>
+                <div><span style="background-color: #1a78d1"></span>-22</div>
+                <div><span style="background-color: #084c8c"></span>-25</div>
+
+                </div>
+
 <div class='map-overlay top'>
     <div class='map-overlay-inner'>
         <div class="radio-toolbar">
             <h2>Traffic flow and road congestion in London from 2019 to 2020 </h2>
-            <h3>Brough (traffic flow - num of vehicles passing)</h3>
+            <h3>Brough (traffic flow - Num of vehicles passing)</h3>
             <input type="radio" id="layer4" name="layers" value="Employment" checked>
             <label for="layer4">2019</label>
         
@@ -114,7 +174,7 @@ body { margin:0; padding:0; }
 
             <h3>Main road (congression - Average delay)</h3>
 
-            <h4>                      </h4>
+            <h4>(Red-increase/ Blue-decrease)                      </h4>
 
             <input type="radio" id="layer2" name="layers" value="Employment" >
             <label for="layer2">2019</label>
@@ -180,6 +240,8 @@ body { margin:0; padding:0; }
                  ['get', '2020'],
                     0, '#ebe3e0',
                     100, '#d3725f',
+                    200, '#d7492d',
+                    300, '#b42e13',
                     400, '#520e00'
         ],             
             
@@ -210,6 +272,8 @@ body { margin:0; padding:0; }
                  ['get', '2019'],
                     0, '#ebe3e0',
                     100, '#d3725f',
+                    200, '#d7492d',
+                    300, '#b42e13',
                     400, '#520e00'
         ],             
             
@@ -239,6 +303,7 @@ body { margin:0; padding:0; }
                  ['linear'],
                  ['get', 'change%'],
                     -0.1, '#1a78d1',
+                    0, '#ffffff',
                    0.1, '#d1231a'
 
         ],             
@@ -268,8 +333,10 @@ body { margin:0; padding:0; }
                  ['linear'],
                  ['get', '2019'],
                  3800, '#ebe3e0',
-
-                10000, '#e33e02'
+                    5300, '#d3725f',
+                    6800, '#d7492d',
+                    8400, '#b42e13',
+                    10000, '#520e00'
         ],             
             
             'fill-opacity': 0.7,
@@ -295,9 +362,11 @@ body { margin:0; padding:0; }
                 'interpolate',
                  ['linear'],
                  ['get', '2020'],
-                    3800, '#ebe3e0',
-
-                    10000, '#e33e02'
+                 3800, '#ebe3e0',
+                    5300, '#d3725f',
+                    6800, '#d7492d',
+                    8400, '#b42e13',
+                    10000, '#520e00'
         ],             
             
             'fill-opacity': 0,
@@ -323,9 +392,10 @@ body { margin:0; padding:0; }
                 'interpolate',
                  ['linear'],
                  ['get', 'grow'],
-                    -25, '#1a78d1',
-
-                    -14, '#a8b8cc'
+                    -25, '#084c8c',
+                    -22, '#1a78d1',
+                    -18,  '#679bda',
+                    -14, '#94b2d6'
         ],             
             
             'fill-opacity': 0,
@@ -361,6 +431,11 @@ mypopup.remove();
 
     });
 
+var flowLegendE = document.getElementById('flow-legend');
+var flowLegendE1 = document.getElementById('flow-legend1');
+var roadLegendE = document.getElementById('road-legend');
+var roadLegendE1 = document.getElementById('road-legend1');
+
 
 //Event listener for layer switch
 document.getElementById("layer1").addEventListener("click", function(){
@@ -370,11 +445,21 @@ map.setPaintProperty('2020_1','fill-opacity',0);
 map.setPaintProperty('2020','line-opacity',0.95);
 map.setPaintProperty('2019_1','fill-opacity',0);
 map.setPaintProperty('growth','fill-opacity',0);
+flowLegendE.style.display = 'none';
+flowLegendE1.style.display = 'none';
+roadLegendE.style.display = 'block';
+roadLegendE1.style.display = 'none';
 });
 
 document.getElementById("layer2").addEventListener("click", function(){
 map.setPaintProperty('2020','line-opacity',0);
 map.setPaintProperty('2019','line-opacity',0.95);
+
+flowLegendE.style.display = 'none';
+flowLegendE1.style.display = 'none';
+roadLegendE.style.display = 'block';
+roadLegendE1.style.display = 'none';
+
 map.setPaintProperty('change%','line-opacity',0);
 map.setPaintProperty('2020_1','fill-opacity',0);
 map.setPaintProperty('2019_1','fill-opacity',0);
@@ -388,6 +473,12 @@ map.setPaintProperty('change%','line-opacity',0.7);
 map.setPaintProperty('2020_1','fill-opacity',0);
 map.setPaintProperty('2019_1','fill-opacity',0);
 map.setPaintProperty('growth','fill-opacity',0);
+flowLegendE.style.display = 'none';
+flowLegendE1.style.display = 'none';
+roadLegendE.style.display = 'none';
+roadLegendE1.style.display = 'block';
+
+
 });
 
 document.getElementById("layer4").addEventListener("click", function(){
@@ -397,6 +488,12 @@ map.setPaintProperty('change%','line-opacity',0);
 map.setPaintProperty('2019_1','fill-opacity',0.7);
 map.setPaintProperty('2020_1','fill-opacity',0);
 map.setPaintProperty('growth','fill-opacity',0);
+flowLegendE.style.display = 'block';
+flowLegendE1.style.display = 'none';
+roadLegendE.style.display = 'none';
+roadLegendE1.style.display = 'none';
+
+
 });
 
 document.getElementById("layer5").addEventListener("click", function(){
@@ -406,6 +503,11 @@ map.setPaintProperty('change%','line-opacity',0);
 map.setPaintProperty('2019_1','fill-opacity',0);
 map.setPaintProperty('2020_1','fill-opacity',0.7);
 map.setPaintProperty('growth','fill-opacity',0);
+flowLegendE.style.display = 'block';
+flowLegendE1.style.display = 'none';
+roadLegendE.style.display = 'none';
+roadLegendE1.style.display = 'none';
+
 });
 
 document.getElementById("layer6").addEventListener("click", function(){
@@ -415,6 +517,12 @@ map.setPaintProperty('change%','line-opacity',0);
 map.setPaintProperty('2019_1','fill-opacity',0);
 map.setPaintProperty('2020_1','fill-opacity',0);
 map.setPaintProperty('growth','fill-opacity',0.7);
+
+flowLegendE.style.display = 'none';
+flowLegendE1.style.display = 'block';
+roadLegendE.style.display = 'none';
+roadLegendE1.style.display = 'none';
+
 });
 
 </script>
