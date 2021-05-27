@@ -1,1 +1,0 @@
-This branch contains the necessary info to build the 'rail.html' in the final output website. 
